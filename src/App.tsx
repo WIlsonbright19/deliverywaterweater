@@ -7,8 +7,9 @@ import diagnosticValveImg from './assets/images/diagnostic_valve_inspection_1790
 import drainTrapImg from './assets/images/drain_trap_precision_work_1790889730937.jpg';
 
 type ServiceTopic = 'Water Heaters' | 'Plumbing Repairs' | 'Urgent Plumbing';
-type ActionIntent = 'call' | 'service';
 type ReviewCategory = 'Water Heaters' | 'Leaks & Pipes' | 'Toilets & Drains';
+
+const BUSINESS_PHONE = '+14155550100';
 
 const SERVICES_DATA: Array<{
   num: string;
@@ -337,8 +338,7 @@ export default function App() {
   const [diagnosisParallax, setDiagnosisParallax] = useState(0);
   const [drainsParallax, setDrainsParallax] = useState(0);
 
-  // Interactive Request State (activated by Call Now / Get Service)
-  const [actionIntent, setActionIntent] = useState<ActionIntent>('call');
+  // Interactive Service Request State
   const [selectedService, setSelectedService] = useState<ServiceTopic>('Water Heaters');
   const [customerName, setCustomerName] = useState('');
   const [customerContact, setCustomerContact] = useState('');
@@ -453,19 +453,8 @@ export default function App() {
     requestAnimationFrame(step);
   }, []);
 
-  const handlePrimaryCallAction = useCallback(
-    (topic?: ServiceTopic) => {
-      setActionIntent('call');
-      if (topic) setSelectedService(topic);
-      setRequestSubmitted(false);
-      smoothScrollTo('contact', true);
-    },
-    [smoothScrollTo]
-  );
-
   const handleGetServiceAction = useCallback(
     (topic?: ServiceTopic) => {
-      setActionIntent('service');
       if (topic) setSelectedService(topic);
       setRequestSubmitted(false);
       smoothScrollTo('contact', true);
@@ -747,13 +736,12 @@ export default function App() {
           {/* Right: Desktop Primary Blue CTA + Mobile/Tablet Hamburger Toggle */}
           <div className="flex items-center gap-[10px] shrink-0">
             {/* Desktop Primary CTA */}
-            <button
-              type="button"
-              onClick={() => handlePrimaryCallAction()}
+            <a
+              href={`tel:${BUSINESS_PHONE}`}
               className="hidden lg:inline-flex wf-btn-primary"
             >
               Call Now
-            </button>
+            </a>
 
             {/* Mobile & Tablet Hamburger Button */}
             <button
@@ -886,13 +874,13 @@ export default function App() {
           {/* Drawer Bottom Actions & SF Location */}
           <div className="pt-[24px] border-t border-[#e0e0e0] space-y-[20px]">
             <div className="flex flex-col gap-[10px]">
-              <button
-                type="button"
-                onClick={() => handlePrimaryCallAction()}
+              <a
+                href={`tel:${BUSINESS_PHONE}`}
+                onClick={() => setIsMobileDrawerOpen(false)}
                 className="wf-btn-primary w-full"
               >
                 Call Now
-              </button>
+              </a>
               <button
                 type="button"
                 onClick={() => handleGetServiceAction()}
@@ -931,13 +919,12 @@ export default function App() {
               </p>
 
               <div className="mt-[48px] flex flex-wrap items-center gap-[10px] anim-hero-cta">
-                <button
-                  type="button"
-                  onClick={() => handlePrimaryCallAction()}
+                <a
+                  href={`tel:${BUSINESS_PHONE}`}
                   className="wf-btn-primary"
                 >
                   Call Now
-                </button>
+                </a>
                 <button
                   type="button"
                   onClick={() => handleGetServiceAction()}
@@ -1406,13 +1393,12 @@ export default function App() {
                   }}
                   className="mt-[48px] flex flex-wrap items-center gap-[10px]"
                 >
-                  <button
-                    type="button"
-                    onClick={() => handlePrimaryCallAction('Urgent Plumbing')}
+                  <a
+                    href={`tel:${BUSINESS_PHONE}`}
                     className="wf-btn-primary"
                   >
                     Call Now
-                  </button>
+                  </a>
                   <button
                     type="button"
                     onClick={() => handleGetServiceAction('Urgent Plumbing')}
@@ -1506,13 +1492,12 @@ export default function App() {
                   >
                     Get Service
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handlePrimaryCallAction('Plumbing Repairs')}
+                  <a
+                    href={`tel:${BUSINESS_PHONE}`}
                     className="wf-btn-secondary"
                   >
                     Call Now
-                  </button>
+                  </a>
                 </div>
               </div>
 
@@ -1682,13 +1667,12 @@ export default function App() {
                   }}
                   className="mt-[48px] flex flex-wrap items-center gap-[10px]"
                 >
-                  <button
-                    type="button"
-                    onClick={() => handlePrimaryCallAction()}
+                  <a
+                    href={`tel:${BUSINESS_PHONE}`}
                     className="wf-btn-primary"
                   >
                     Call Now
-                  </button>
+                  </a>
                   <button
                     type="button"
                     onClick={() => handleGetServiceAction()}
@@ -1711,46 +1695,12 @@ export default function App() {
               {/* Right Column: Flat Webflow Card for Callback / Service Dispatch */}
               <div className="lg:col-span-6">
                 <div className="wf-card p-[24px] sm:p-[48px]">
-                  {/* Mode Switcher */}
-                  <div className="flex items-center gap-[10px] pb-[20px] mb-[24px] border-b border-[#e0e0e0]">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActionIntent('call');
-                        setRequestSubmitted(false);
-                      }}
-                      className={`wf-tab-btn flex-1 sm:flex-initial ${
-                        actionIntent === 'call'
-                          ? 'wf-tab-btn-active'
-                          : 'wf-tab-btn-inactive'
-                      }`}
-                    >
-                      Call Now
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActionIntent('service');
-                        setRequestSubmitted(false);
-                      }}
-                      className={`wf-tab-btn flex-1 sm:flex-initial ${
-                        actionIntent === 'service'
-                          ? 'wf-tab-btn-active'
-                          : 'wf-tab-btn-inactive'
-                      }`}
-                    >
-                      Get Service
-                    </button>
-                  </div>
-
                   {requestSubmitted ? (
                     <div className="py-[24px] space-y-[20px]">
                       <p className="wf-label text-[#146ef5]">REQUEST RECEIVED</p>
                       <h3 className="wf-headline-md">We have your details.</h3>
                       <p className="wf-body text-[#080808]">
-                        {actionIntent === 'call'
-                          ? `We will call ${customerContact} regarding your ${selectedService.toLowerCase()} request.`
-                          : `Your ${selectedService.toLowerCase()} service request for ${customerName} has been logged.`}
+                        Your {selectedService.toLowerCase()} service request for {customerName} has been logged. You will get a phone call soon.
                       </p>
                       <div className="pt-[20px] border-t border-[#e0e0e0]">
                         <button
@@ -1769,14 +1719,10 @@ export default function App() {
                     <form onSubmit={handleSubmitRequest} className="space-y-[20px]" noValidate>
                       <div>
                         <p className="wf-label text-[#080808] mb-[10px]">
-                          {actionIntent === 'call'
-                            ? 'Request an immediate call'
-                            : 'Request plumbing service'}
+                          Request plumbing service
                         </p>
                         <p className="wf-body text-[#080808]">
-                          {actionIntent === 'call'
-                            ? "Enter your number and tell us what's happening."
-                            : 'Select the issue and let us know where in San Francisco you are located.'}
+                          Select the issue and let us know where in San Francisco you are located.
                         </p>
                       </div>
 
@@ -1868,7 +1814,7 @@ export default function App() {
 
                       <div className="pt-[10px]">
                         <button type="submit" className="wf-btn-primary">
-                          {actionIntent === 'call' ? 'Call Now' : 'Get Service'}
+                          Get Service
                         </button>
                       </div>
                     </form>
